@@ -112,14 +112,14 @@ EXECUTE TNOP_auto [1]
 
 -- Create trigger update TNOP on Subcategories table whenever insert product to products table—
 CREATE Trigger Sub_ProductInsert
-ON Products
+ON [LINHLE_portfolio].[dbo].[Products] 
 FOR INSERT
 AS
-IF NOT EXISTS (SELECT * FROM Subcategories, INSERTED WHERE Subcategories.ProductSubcategoryKey=INSERTED.ProductSubcategoryKey)
+IF NOT EXISTS (SELECT * FROM [LINHLE_portfolio].[dbo].[Subcategories] , INSERTED 
+				WHERE [LINHLE_portfolio].[dbo].[Subcategories].ProductSubcategoryKey=INSERTED.ProductSubcategoryKey)
 ROLLBACK TRANSACTION
 ELSE
-UPDATE Subcategories
-SET Subcategories.TNOP=Subcategories.TNOP+1
+UPDATE [LINHLE_portfolio].[dbo].[Subcategories]
+SET TNOP= TNOP+1
 FROM INSERTED
-WHERE Subcategories.ProductSubcategoryKey=INSERTED.ProductSubcategoryKey
-
+WHERE [LINHLE_portfolio].[dbo].[Subcategories].ProductSubcategoryKey=INSERTED.ProductSubcategoryKey
