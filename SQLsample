@@ -27,21 +27,7 @@ FROM [Linhle_portfolio].[dbo].[Sale16] AS A INNER JOIN [Linhle_portfolio].[dbo].
 GROUP BY A.CustomerKey, B.Prefix+ B.FirstName+B.Lastname  HAVING SUM(A.Orderquantity*C.ProductPrice) BETWEEN 10 AND 50
 ORDER BY SUM(A.Orderquantity*C.ProductPrice) DESC
 
---Calculate returnDate--
-SELECT A.Productkey,B.ProductName,A.Orderquantity,r.ReturnQuantity
-INTO return_order_quantity
-FROM (
-		SELECT Sale.Productkey, SUM(OrderQuantity) AS orderquantity
-		FROM (
-				Select* from [LINHLE_portfolio].[dbo].[Sale16] UNION Select * FROM [LINHLE_portfolio].[dbo].[Sale17]) As Sale
-				Group by Sale.Productkey) AS A
-	INNER JOIN [LINHLE_portfolio].[dbo].[Products] AS B ON A.ProductKey=B.Productkey
-	LEFT JOIN ( Select Productkey, SUM(returnquantity) AS Returnquantity
-				FROM [LINHLE_portfolio].[dbo].[returns]
-				GROUP BY Productkey) AS r
-	ON r.Productkey=B.Productkey
-ORDER BY A.Orderquantity DESC
---Calculate returnDate2--
+--Calculate returnrate--
 SELECT *
 INTO SALE
 FROM [LINHLE_portfolio].[dbo].[Sale16] 
@@ -58,6 +44,10 @@ FROM (Select Productkey,Territorykey,SUM(OrderQuantity) AS OrderQuantity FROM SA
 	    ON C.Productkey=A.Productkey AND C.TerritoryKey=A.TerritoryKey
 	    INNER JOIN [LINHLE_portfolio].[dbo].[Products] AS B ON B.Productkey=C.Productkey
 ORDER BY C.Orderquantity DESC
+
+SELECT ProductKey,TerritoryKey,returnquantity/orderquantity as returnrate
+FROM Return_rate
+ORDER BY returnquantity/orderquantity DESC
 
 --Create Procudure to display monthly revenue of the specified customer key--
 CREATE PROCEDURE Month_Customer 
